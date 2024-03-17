@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, urlencoded } from "express";
 import cors from "cors";
 import { UserRoutes } from "./app/modules/User/user.routes";
+import { AdminRoutes } from "./app/modules/Admin/admin.routes";
 const app: Application = express();
 
 app.use(cors());
@@ -8,12 +9,7 @@ app.use(cors());
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 
-app.get("/", (req: Request, res: Response) => {
-  res.send({
-    message: "PH Health Care",
-  });
-});
-
 app.use("/api/v1/user", UserRoutes);
+app.use("/api/v1/admin", AdminRoutes);
 
 export default app;
