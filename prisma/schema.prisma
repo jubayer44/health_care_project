@@ -38,6 +38,7 @@ model Admin {
 enum UserStatus {
   ACTIVE
   BLOCKED
+  DELETED
 }
 
 enum UserRole {
