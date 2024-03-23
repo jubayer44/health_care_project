@@ -36,7 +36,48 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const changePassword = catchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const result = await AuthService.changePassword(req?.user, req?.body);
+    sendResponse(res, {
+      success: true,
+      statusCode: 201,
+      message: "Password changed successfully",
+      data: result,
+    });
+  }
+);
+
+const forgotPassword = catchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    await AuthService.forgotPassword(req.body);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: 201,
+      message: "Password sent to your email. Check your inbox!",
+      data: null,
+    });
+  }
+);
+
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization || "";
+
+  await AuthService.resetPassword(token, req.body);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 201,
+    message: "Password changed successfully!",
+    data: null,
+  });
+});
+
 export const AuthController = {
   loginUser,
   refreshToken,
+  changePassword,
+  forgotPassword,
+  resetPassword,
 };
