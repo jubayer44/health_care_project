@@ -3,11 +3,11 @@ import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import pick from "../../../shared/pick";
 import sendResponse from "../../../shared/sendResponse";
-import { filterOptions, filterableFields } from "./admin.constant";
+import { filterOptions, adminFilterAbleFields } from "./admin.constant";
 import { AdminService } from "./admin.service";
 
 const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req?.query, filterableFields);
+  const filters = pick(req?.query, adminFilterAbleFields);
   const options = pick(req?.query, filterOptions);
 
   const result = await AdminService.getAllAdmins(filters, options);
