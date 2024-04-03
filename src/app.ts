@@ -18,6 +18,6 @@ app.use("/api/v1", router);
 
 app.use(globalErrorHandler);
 
-app.use(notFoundPath);
+app.use("*", notFoundPath);
 
 export default app;

@@ -6,6 +6,7 @@ import pick from "../../../shared/pick";
 import { userFilterAbleFields } from "./user.constant";
 import { filterOptions } from "../Admin/admin.constant";
 import httpStatus from "http-status";
+import TAuthUser from "../../interfaces/common";
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.createAdmin(req);
@@ -64,10 +65,40 @@ const changeUserStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMyProfile = catchAsync(
+  async (req: Request & { user?: TAuthUser }, res: Response) => {
+    const user = req.user as TAuthUser;
+
+    const result = await UserService.getMyProfile(user);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "User Profile Retrieved successfully",
+      data: result,
+    });
+  }
+);
+
+const updateMyProfile = catchAsync(
+  async (req: Request & { user?: TAuthUser }, res: Response) => {
+    const user = req.user as TAuthUser;
+
+    const result = await UserService.updateMyProfile(user, req);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "User Profile Updated successfully",
+      data: result,
+    });
+  }
+);
+
 export const UserController = {
   createAdmin,
   createDoctor,
   createPatient,
   getAllUser,
   changeUserStatus,
+  getMyProfile,
+  updateMyProfile,
 };

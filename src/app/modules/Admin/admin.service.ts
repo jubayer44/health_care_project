@@ -147,3 +147,31 @@ export const AdminService = {
   deleteAdminFromDb,
   softDeleteAdminIntoDb,
 };
+
+// {
+//   AND: [
+//     {
+//       OR: [
+//         {
+//           location: {
+//             contains: searchTerm,
+//             mode: "insensitive",
+//           },
+//         },
+//         {
+//           description: {
+//             contains: searchTerm,
+//             mode: "insensitive",
+//           },
+//         },
+//       ],
+//     },
+//     {
+//       AND: [
+//         {
+//           availability: true,
+//         },
+//       ],
+//     },
+//   ],
+// }

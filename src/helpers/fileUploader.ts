@@ -3,11 +3,12 @@ import path from "path";
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import { TFile, TUploadCloudinaryResponse } from "../app/interfaces/file";
+import config from "../config";
 
 cloudinary.config({
-  cloud_name: "dqke2ei62",
-  api_key: "237351714511166",
-  api_secret: "iAtbcUksUC32zKW_j9jbKsdFsT8",
+  cloud_name: config.cloudinary.cloud_name,
+  api_key: config.cloudinary.api_key,
+  api_secret: config.cloudinary.api_secret,
 });
 
 const storage = multer.diskStorage({
