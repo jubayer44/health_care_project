@@ -5,6 +5,10 @@ import { SpecialtiesValidationSchemas } from "./specialties.validation";
 
 const router = express.Router();
 
+router.get("/", SpecialtiesController.getAllSpecialties);
+
+router.get("/:id", SpecialtiesController.getSpecialty);
+
 router.post(
   "/",
   fileUploader.upload.single("file"),

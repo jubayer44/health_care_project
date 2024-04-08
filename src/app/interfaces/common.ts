@@ -7,4 +7,12 @@ type TAuthUser = {
   exp: number;
 };
 
+export type TParams = {
+  name?: string | undefined;
+  email?: string | undefined;
+  contactNumber?: string | undefined;
+  searchTerm?: string | undefined;
+  specialties?: string | undefined;
+};
+
 export default TAuthUser;
