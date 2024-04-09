@@ -57,7 +57,7 @@ model Doctor {
   updatedAt           DateTime            @updatedAt
   user                User                @relation(fields: [email], references: [email])
   doctorSpecialties   DoctorSpecialties[]
-  doctorSchedules     DoctorSchedule[]
+  doctorSchedules     DoctorSchedules[]
 
   @@map("doctors")
 }
@@ -142,18 +142,21 @@ model Schedule {
   endDateTime     DateTime
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-  doctorSchedules DoctorSchedule[]
+  doctorSchedules DoctorSchedules[]
 
   @@map("schedules")
 }
 
-model DoctorSchedule {
-  doctorId      String
-  doctor        Doctor   @relation(fields: [doctorId], references: [id])
-  scheduleId    String
-  schedule      Schedule @relation(fields: [scheduleId], references: [id])
-  isBooked      Boolean
-  appointmentId String
+model DoctorSchedules {
+  doctorId String
+  doctor   Doctor @relation(fields: [doctorId], references: [id])
+
+  scheduleId String
+  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+
+  isBooked Boolean @default(false)
+
+  appointmentId String?   
 
   @@id([doctorId, scheduleId])
   @@map("doctor_schedules")
