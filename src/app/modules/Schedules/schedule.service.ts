@@ -1,7 +1,93 @@
+import { Prisma, Schedule } from "@prisma/client";
 import { addHours, addMinutes, format } from "date-fns";
+import { paginationHelpers } from "../../../helpers/paginationHelpers";
 import prisma from "../../../shared/prisma";
-import { Schedule } from "@prisma/client";
-import { TSchedule } from "./schedule.interface";
+import { TPagination } from "../../interfaces/pagination";
+import { TFilterRequest, TSchedule } from "./schedule.interface";
+import TAuthUser from "../../interfaces/common";
+
+const getScheduleFromDB = async (
+  params: TFilterRequest,
+  options: TPagination,
+  user: TAuthUser
+) => {
+  const { page, limit, skip } = paginationHelpers.calculatePagination(options);
+  const { startDate, endDate, ...restData } = params;
+
+  const andConditions: Prisma.ScheduleWhereInput[] = [];
+
+  if (Object.keys(restData)?.length > 0) {
+    andConditions.push({
+      AND: Object.keys(restData).map((key) => ({
+        [key]: (restData as any)[key],
+      })),
+    });
+  }
+
+  if (startDate && endDate) {
+    andConditions.push({
+      AND: [
+        {
+          startDateTime: {
+            gte: startDate,
+          },
+        },
+        {
+          endDateTime: {
+            lte: endDate,
+          },
+        },
+      ],
+    });
+  }
+
+  const whereConditions: Prisma.ScheduleWhereInput = { AND: andConditions };
+
+  const doctorSchedule = await prisma.doctorSchedules.findMany({
+    where: {
+      doctor: {
+        email: user.email,
+      },
+    },
+  });
+
+  const doctorScheduleIds = doctorSchedule.map(
+    (schedule) => schedule.scheduleId
+  );
+
+  const result = await prisma.schedule.findMany({
+    where: {
+      ...whereConditions,
+      id: { notIn: doctorScheduleIds },
+    },
+    skip,
+    take: limit,
+    orderBy:
+      options?.sortBy && options?.sortOrder
+        ? {
+            [options.sortBy]: options.sortOrder,
+          }
+        : {
+            createdAt: "desc",
+          },
+  });
+
+  const total = await prisma.schedule.count({
+    where: {
+      ...whereConditions,
+      id: { notIn: doctorScheduleIds },
+    },
+  });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total: total,
+    },
+    data: result,
+  };
+};
 
 const insertScheduleIntoDB = async (
   payload: TSchedule
@@ -66,4 +152,5 @@ const insertScheduleIntoDB = async (
 
 export const ScheduleService = {
   insertScheduleIntoDB,
+  getScheduleFromDB,
 };
