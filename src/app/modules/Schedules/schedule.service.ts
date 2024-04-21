@@ -6,6 +6,11 @@ import { TPagination } from "../../interfaces/pagination";
 import { TFilterRequest, TSchedule } from "./schedule.interface";
 import TAuthUser from "../../interfaces/common";
 
+const convertToUTC = async (date: Date) => {
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() + offset);
+};
+
 const getScheduleFromDB = async (
   params: TFilterRequest,
   options: TPagination,
@@ -122,10 +127,13 @@ const insertScheduleIntoDB = async (
       )
     );
 
+    const sDate = await convertToUTC(startDateTime);
+    const eDate = await convertToUTC(addMinutes(startDateTime, intervalTime));
+
     while (startDateTime < endDateTime) {
       const scheduleData = {
-        startDateTime: startDateTime,
-        endDateTime: addMinutes(startDateTime, intervalTime),
+        startDateTime: sDate,
+        endDateTime: eDate,
       };
 
       const existingSchedule = await prisma.schedule.findFirst({

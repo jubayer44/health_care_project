@@ -61,7 +61,7 @@ const getAllDoctors = async (params: TParams, options: TPagination) => {
             [options.sortBy]: options.sortOrder,
           }
         : {
-            createdAt: "desc",
+            averageRating: "desc",
           },
     include: {
       doctorSpecialties: {
